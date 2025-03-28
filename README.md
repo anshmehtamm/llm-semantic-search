@@ -1,4 +1,4 @@
-# LLM-Powered Semantic Search for E-commerce
+# Semantic Search
 
 This project implements and evaluates an LLM-powered semantic search system for e-commerce product discovery, based on the proposal by Ansh Mehta and Shivam Sah. It leverages sentence embeddings and vector databases to understand user intent beyond simple keyword matching.
 
