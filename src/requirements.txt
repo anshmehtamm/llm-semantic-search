@@ -1,0 +1,25 @@
+# Core ML/NLP
+torch
+transformers
+sentence-transformers
+faiss-cpu  # Or faiss-gpu if you have CUDA set up
+
+# Data Handling
+pandas
+
+# Orchestration & LLM Tools
+langchain
+langchain_community # May need specific community integrations
+
+# Prototyping UI
+streamlit
+
+# Evaluation (basic numerical)
+numpy
+scikit-learn # For potential helper functions, though core metrics are custom
+
+# Optional: Other vector DBs (uncomment if used)
+# annoy
+# pymilvus
+# pinecone-client
+# weaviate-client 
