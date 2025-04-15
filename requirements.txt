@@ -1,0 +1,10 @@
+# Core ML/NLP
+torch
+transformers
+sentence-transformers
+faiss-gpu
+# Data Handling
+pandas
+streamlit
+numpy
+scikit-learn 
