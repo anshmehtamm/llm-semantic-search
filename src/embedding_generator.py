@@ -1,8 +1,8 @@
 import torch
 from sentence_transformers import SentenceTransformer
 import logging
-from . import config
-from .utils import timeit
+import config
+from utils import timeit
 
 logger = logging.getLogger(__name__)
 

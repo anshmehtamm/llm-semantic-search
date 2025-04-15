@@ -2,8 +2,8 @@ import faiss
 import numpy as np
 import logging
 import os
-from . import config
-from .utils import timeit, save_json, load_json
+import config
+from utils import timeit, save_json, load_json
 
 logger = logging.getLogger(__name__)
 

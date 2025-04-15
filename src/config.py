@@ -28,5 +28,19 @@ EVALUATION_K = [1, 3, 5, 10]
 INDEX_DIR.mkdir(exist_ok=True)
 DATA_DIR.mkdir(exist_ok=True)
 
-
 EMBEDDING_BATCH_SIZE = 64
+
+# Cross-Encoder Configuration
+BASE_CROSS_ENCODER_MODEL = "cross-encoder/ms-marco-MiniLM-L-6-v2"
+
+FINETUNED_CROSS_ENCODER_PATH = PROJECT_ROOT / 'models' / 'fine_tuned_cross_encoder'
+CROSS_ENCODER_TRAIN_BATCH_SIZE = 64
+CROSS_ENCODER_EPOCHS = 1 
+CROSS_ENCODER_LR = 2e-5
+CROSS_ENCODER_WARMUP_STEPS = 100
+CROSS_ENCODER_VALIDATION_SPLIT = 0.1
+
+# Create model directory
+FINETUNED_CROSS_ENCODER_PATH.parent.mkdir(parents=True, exist_ok=True)
+
+RERANK_CANDIDATE_COUNT = 50 # candidates to fetch from semantic search for re-ranking

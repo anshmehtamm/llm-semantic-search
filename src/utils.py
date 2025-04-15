@@ -7,7 +7,6 @@ def setup_logger():
     """Sets up the root logger."""
     log_format = "%(asctime)s - %(levelname)s - %(name)s - %(message)s"
     logging.basicConfig(level=logging.INFO, format=log_format, stream=sys.stdout)
-    # Reduce verbosity of HuggingFace libraries
     logging.getLogger("transformers").setLevel(logging.WARNING)
     logging.getLogger("sentence_transformers").setLevel(logging.WARNING)
 
