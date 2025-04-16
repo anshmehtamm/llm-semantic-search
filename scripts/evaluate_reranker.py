@@ -9,11 +9,9 @@ from pathlib import Path
 import argparse
 import torch
 from sentence_transformers import CrossEncoder
-# Use the evaluator that worked during training
 from sentence_transformers.cross_encoder.evaluation import CrossEncoderRerankingEvaluator
 from collections import defaultdict
 
-# Ensure the src directory is in the Python path
 sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
 
 from src import config
@@ -24,7 +22,7 @@ setup_logger()
 logger = logging.getLogger(__name__)
 
 # Define relevance thresholds for evaluation
-POSITIVE_THRESHOLD = 0.75 # Corresponds to 'S' (Substitute) and 'E' (Exact)
+POSITIVE_THRESHOLD = 0.75 
 
 LABEL_TO_SCORE = {
     'E': 1.0,
@@ -37,10 +35,10 @@ def prepare_text_for_product(row: pd.Series) -> str:
     """Combines relevant product fields into a single text string."""
     text_parts = [
         row.get('product_title'),
-        row.get('product_description'),
-        row.get('product_bullet_point'),
         f"Brand: {row.get('product_brand')}" if pd.notna(row.get('product_brand')) else None,
         f"Color: {row.get('product_color')}" if pd.notna(row.get('product_color')) else None,
+        row.get('product_description'),
+        row.get('product_bullet_point'),
     ]
     return " ".join(str(part) for part in text_parts if pd.notna(part) and str(part).strip())
 # --- End Configuration ---
@@ -138,15 +136,11 @@ def prepare_evaluation_samples(test_df: pd.DataFrame):
             else:
                 negative_docs.append(row['product_text'])
 
-        # Evaluator requires at least one positive document per query sample
         if positive_docs:
             evaluation_samples.append({
                 'query': query_text,
                 'positive': positive_docs,
                 'negative': negative_docs
-                # NOTE: If you have pre-ranked results from semantic search for the test set,
-                # you could use the 'documents' key instead of 'negative' for a potentially
-                # more realistic evaluation setup. This requires more complex data handling.
             })
         else:
              logger.debug(f"Query ID {qid} has no positive examples in test set, skipping for evaluator.")
@@ -177,9 +171,9 @@ def main(args):
     # 3. Initialize Evaluator
     evaluator = CrossEncoderRerankingEvaluator(
         samples=evaluation_samples,
-        name=f'test_set_{args.locale}', # Include locale in name
+        name=f'test_set_{args.locale}',
         batch_size=args.batch_size,
-        show_progress_bar=True # Show progress for evaluation
+        show_progress_bar=True 
     )
     logger.info(f"CrossEncoderRerankingEvaluator initialized. Expecting metrics like: {evaluator.primary_metric}")
 
@@ -199,7 +193,7 @@ def main(args):
 
     # 5. Run Evaluation
     logger.info("Running evaluation...")
-    results = evaluator(model, output_path=args.output_dir) # Pass output_dir if you want CSV saved there
+    results = evaluator(model, output_path=args.output_dir)
 
     # 6. Log Results
     logger.info("--- Evaluation Results ---")
@@ -229,13 +223,13 @@ if __name__ == "__main__":
     parser.add_argument(
         "--batch_size",
         type=int,
-        default=64, # Adjust based on GPU memory
+        default=64, 
         help="Batch size for evaluation."
     )
     parser.add_argument(
         "--output_dir",
         type=str,
-        default=None, # Defaults to current dir if None
+        default=None, 
         help="Directory to save the evaluation results CSV file."
     )
 

@@ -19,7 +19,7 @@ INDEX_FILE = INDEX_DIR / f'{EMBEDDING_MODEL_NAME.replace("/","_")}_faiss.index'
 ID_MAP_FILE = INDEX_DIR / f'{EMBEDDING_MODEL_NAME.replace("/","_")}_id_map.json'
 
 # Model configuration
-DEVICE = "cuda" if os.environ.get("CUDA_VISIBLE_DEVICES") else "cpu"
+DEVICE = "cuda"
 
 # Search configuration
 DEFAULT_SEARCH_K = 10
