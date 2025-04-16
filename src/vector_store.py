@@ -106,55 +106,65 @@ class VectorStore:
     @timeit
     def _save_index(self):
         """Saves the FAISS index and the ID map to disk."""
+        # Convert Path objects to strings for faiss and save_json
+        index_file_str = str(self.index_file)
+        id_map_file_str = str(self.id_map_file)
+
         if self.index is not None:
             try:
-                faiss.write_index(self.index, self.index_file)
-                logger.info(f"FAISS index saved to {self.index_file}")
+                # Pass the string path to faiss.write_index
+                faiss.write_index(self.index, index_file_str)
+                logger.info(f"FAISS index saved to {index_file_str}")
             except Exception as e:
-                logger.error(f"Error saving FAISS index to {self.index_file}: {e}")
+                logger.error(f"Error saving FAISS index to {index_file_str}: {e}")
         else:
             logger.warning("Attempted to save index, but it's not built.")
 
         if self.id_map:
-            save_json(self.id_map, self.id_map_file)
+            # Pass the string path to save_json
+            save_json(self.id_map, id_map_file_str)
         else:
             logger.warning("Attempted to save ID map, but it's empty.")
-
 
     @timeit
     def _load_index(self):
         """Loads the FAISS index and ID map from disk if they exist."""
-        index_exists = os.path.exists(self.index_file)
-        map_exists = os.path.exists(self.id_map_file)
+        # Convert Path objects to strings for os.path.exists and faiss functions
+        index_file_str = str(self.index_file)
+        id_map_file_str = str(self.id_map_file)
+
+        index_exists = os.path.exists(index_file_str)
+        map_exists = os.path.exists(id_map_file_str)
 
         if index_exists and map_exists:
-            logger.info(f"Loading existing index from {self.index_file} and map from {self.id_map_file}")
+            logger.info(f"Loading existing index from {index_file_str} and map from {id_map_file_str}") # Log the string path
             try:
-                self.index = faiss.read_index(self.index_file)
+                # Pass the string path to faiss.read_index
+                self.index = faiss.read_index(index_file_str)
                 logger.info(f"Loaded FAISS index with {self.index.ntotal} vectors.")
 
                 # Load the ID map, converting keys back to integers
-                loaded_map_str_keys = load_json(self.id_map_file)
+                loaded_map_str_keys = load_json(id_map_file_str) # Use string path for load_json too
                 if loaded_map_str_keys:
-                     self.id_map = {int(k): v for k, v in loaded_map_str_keys.items()}
-                     logger.info(f"Loaded ID map with {len(self.id_map)} entries.")
-                     # Basic validation
-                     if self.index.ntotal != len(self.id_map):
-                         logger.warning(f"Index size ({self.index.ntotal}) != ID map size ({len(self.id_map)}). Possible inconsistency.")
+                    self.id_map = {int(k): v for k, v in loaded_map_str_keys.items()}
+                    logger.info(f"Loaded ID map with {len(self.id_map)} entries.")
+                    # Basic validation
+                    if self.index.ntotal != len(self.id_map):
+                        logger.warning(f"Index size ({self.index.ntotal}) != ID map size ({len(self.id_map)}). Possible inconsistency.")
                 else:
                     logger.error("Failed to load ID map, although file exists.")
-                    self.index = None 
+                    self.index = None
 
             except Exception as e:
                 logger.error(f"Error loading index or map: {e}. Index will need to be rebuilt.")
                 self.index = None
                 self.id_map = {}
         elif index_exists != map_exists:
-             logger.warning(f"Index file exists ({index_exists}) but ID map file exists ({map_exists}). Files seem inconsistent. Index will need to be rebuilt.")
-             self.index = None
-             self.id_map = {}
+            logger.warning(f"Index file exists ({index_exists}) but ID map file exists ({map_exists}) using paths {index_file_str}, {id_map_file_str}. Files seem inconsistent. Index will need to be rebuilt.")
+            self.index = None
+            self.id_map = {}
         else:
-            logger.info("No existing index found. Index needs to be built.")
+            logger.info(f"No existing index found at {index_file_str}. Index needs to be built.")
             self.index = None
             self.id_map = {}
 
