@@ -1,8 +1,9 @@
 # Core ML/NLP
 torch
 transformers
-sentence-transformers
-faiss-gpu
+sentence-transformers==4.1.0
+faiss-gpu-cu12
+datasets
 # Data Handling
 pandas
 streamlit
